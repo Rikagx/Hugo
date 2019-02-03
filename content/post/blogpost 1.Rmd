@@ -1,0 +1,60 @@
+---
+title: "Working with Survey Monkeys"
+author: "Rika Gorn"
+date: "February 3, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(socviz)
+library(glue)
+library(knitr)
+library(scales)
+library(kableExtra)
+library(dplyr)
+library(tidyr)
+library(readxl)
+library(janitor)
+library(ggplot2)
+library(ggthemes)
+library(forcats)
+library(corrplot)
+library(stringr)
+library(tidyverse)
+```
+
+## R Markdown
+
+As a data practicioner in the public sector, I frequently work on data compiled through surveys. We use surveys to get a feel for how clients are reacting to various programming, to analyze qualitative and quantitative data, and even to compile demographics. 90% of the time, the data is collected through [SurveyMonkey] (www.surveymonkey.com) - an online tool that works pretty well, especially if you upgrade to a paid version. As with any online software tool that optimizes UI through point and click tools, it has a few quirks. If, like me, you want to do the analysis on your own or in some other tool like R,I've found that there are a handful of best practices that can help.  I wanted to write a blogpost that went through some ways to work through these quirks, summarize likert style data, and create some easy, quick, and pretty visualizations.
+
+### Exporting SM data
+
+In the **Analyze Results** tab, SM allows users to download their data in a variety of ways. You can download the following in csv, xlsx, pdf, or spss outputs: 
+
+*All summary data - I have not found this useful for my own analysis. This simply spits out the aggregate results of each question.
+
+*All responses data - exports the raw dataset with individual responses as rows and questions as columns. This is what I primarily use for my analysis.
+
+*All individual responses - exports all the answers for a specific individual.
+
+### Cleaning data
+
+In a standard survey, I will usually have a mix of demographic, binary (Yes or No), and likert scale questions. When I load my data in R, however, I can quickly see that SM has a funny way of organizing the questions and their associated labels.
+
+
+
+```{r warning = FALSE}
+mysurvey <- read_csv("mysurvey.csv")
+glimpse(mysurvey)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
