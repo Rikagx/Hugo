@@ -2,7 +2,7 @@
 title: "Working with Survey Monkeys"
 author: "Rika Gorn"
 date: "February 3, 2019"
-output: md_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -25,15 +25,13 @@ library(tidyverse)
 library(here)
 ```
 
-## R Markdown
-
 As a data practicioner in the public sector, I frequently work on data compiled through surveys. We use surveys to get a feel for how clients are reacting to various programming, to analyze qualitative and quantitative data, and even to compile demographics. 90% of the time, the data is collected through [SurveyMonkey] (www.surveymonkey.com) - an online tool that works pretty well, especially if you upgrade to a paid version. As with any online software tool that optimizes UI through point and click tools, it has a few quirks. If, like me, you want to do the analysis on your own or in some other tool like R,I've found that there are a handful of best practices that can help.  I wanted to write a blogpost that went through some ways to work through these quirks, summarize likert style data, and create some easy, quick, and pretty visualizations.
 
 ### Exporting SM data
 
 In the **Analyze Results** tab, SM allows users to download their data in a variety of ways. You can download the following in csv, xlsx, pdf, or spss outputs: 
 
-*All summary data - I have not found this useful for my own analysis. This simply spits out the aggregate results of each question.
+*All summary data - I have not found this useful for my own analysis. This simply spits out the aggregate results of each question. 
 
 *All responses data - exports the raw dataset with individual responses as rows and questions as columns. This is what I primarily use for my analysis.
 
@@ -41,24 +39,26 @@ In the **Analyze Results** tab, SM allows users to download their data in a vari
 
 ### Cleaning data
 
-In a standard survey, I will usually have a mix of demographic, binary (Yes or No), and likert scale questions. When I load my data in R, however, I can quickly see that SM has a funny way of organizing the questions and their associated labels, and answer choices.
+In a standard survey, I will usually have a mix of demographic, binary (Yes or No), and likert scale questions. When I load my data in R as a .csv, however, I can quickly see that SM has a funny way of organizing the questions and their associated labels, and answer choices.
 
 
-```{r warning = FALSE}
+```{r echo = FALSE, message = FALSE, warning = FALSE}
 mysurvey <- read_csv(here("mysurvey.csv"))
 ```
 ```{r}
-glimpse(mysurvey)
+head(mysurvey)
 ```
 
 
 The main issues in the export are that:
 
 -race seems to be a multi-answer category, so SM includes the answers across multiple columns
--The first two rows include meta-data unevenly. FOr demographic or binary questions, the question "label" is in the first row. But for likert scale questions, the statement that respondents agree or disagree with, is in the second row, since they are all subsets of the main question "Please indicate how strongly you agree or disagree with the following statements." In these situations, the first row is blank (e.g. X14, X15, X16, X17) and the second row includes the statement that we want to see.
--All my factors are categories
 
-First, I'll fix the multi-answers for race and do a bit of basic cleaning and renaming with the janitor package.
+-The first two rows include meta-data unevenly. FOr demographic or binary questions, the question "label" is in the first row. But for likert scale questions, the statement that respondents agree or disagree with, is in the second row, since they are all subsets of the main question "Please indicate how strongly you agree or disagree with the following statements." In these situations, the first row is blank (e.g. X14, X15, X16, X17) and the second row includes the statement that we want to see.
+
+-All my factors are characters
+
+First, I'll fix the multi-answers for race and do a bit of basic cleaning with the wonderful [janitor] (https://github.com/sfirke/janitor) package.
 
 ```{r}
 library(janitor)
@@ -68,7 +68,7 @@ mysurvey <- mysurvey %>% clean_names() %>%
   glimpse()
 
 ``` 
-Now we have the top answers for race only in one column! Next, I like to 
+Now we have the top answers for race only in one column! Next, since I have my headers in both the 1st and 2nd rows, I like to create a data dictionary vector for myself, which helps me from getting confused. The likert questions are named Q1, Q2,...and the statements are under the label column. 
 
 ```{r}
 
@@ -81,11 +81,29 @@ data_dictionary <- data_dictionary %>% as.data.frame  %>%
   rownames_to_column(., 'Var1') %>% select(-Var1) %>% 
   gather(key = "Question", value = "label", convert = TRUE)
   
-data_dictionary <- data_dictionary[1,7] <- 
-data_dictionary <- data_dictionary[1,8]
-data_dictionary <- data_dictionary[1,14]
+data_dictionary[7, 2] <- "I know where to get information on safety rights and/or reporting"
+data_dictionary[8, 2] <- "I know who to talk to or how to file a complaint if I feel unsafe"
+data_dictionary[14,2] <- "Response"
 ```
-Since likert questions tend to be long sentences, I usually just rename them as Q# and keep the labels separate in a data dictionary. This makes analysis and visualizing charts much easier. The questions in the data disctionary were also the ones were the labels were missing from the 1st row - so this makes organizing the data much easier.
+This makes analysis and visualizing charts much easier. The questions in the data disctionary were also the ones were the labels were missing from the 1st row - so this makes organizing the data much easier.
+
+```{r echo = FALSE}
+View(data_dictionary)
+```
+
+Then we just rename the dataframe, remove the meta-data row, and parse the columns appropriately. Now we have a dataset that we can work with!
+
+```{r}
+names(mysurvey) <- names
+mysurvey <- mysurvey[-1,]   
+
+mysurvey$age <- parse_number(mysurvey$age)
+cols <- colnames(mysurvey[ ,2:14])
+mysurvey[,cols] <- lapply(mysurvey[,cols], as.factor)
+
+glimpse(mysurvey)
+
+```
 
 
 

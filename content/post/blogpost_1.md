@@ -83,7 +83,7 @@ questions and their associated labels, and answer choices.
     ## $ X16                                                                                                                              <chr> ...
     ## $ X17                                                                                                                              <chr> ...
 
-The main issues are:
+The main issues in the export are that:
 
 -race seems to be a multi-answer category, so SM includes the answers
 across multiple columns -The first two rows include meta-data unevenly.
@@ -93,14 +93,51 @@ respondents agree or disagree with, is in the second row, since they are
 all subsets of the main question "Please indicate how strongly you agree
 or disagree with the following statements." In these situations, the
 first row is blank (e.g. X14, X15, X16, X17) and the second row includes
-the statement that we want to see. -
+the statement that we want to see. -All my factors are categories
 
-Including Plots
----------------
+First, I'll fix the multi-answers for race and do a bit of basic
+cleaning and renaming with the janitor package.
 
-You can also embed plots, for example:
+    library(janitor)
+    mysurvey <- mysurvey %>% clean_names() %>% 
+      mutate(race = coalesce(what_is_your_race, x4, x5, x6)) %>% 
+      select(-what_is_your_race, -x4, -x5, -x6) %>% 
+      glimpse()
 
-![](blogpost_1_files/figure-markdown_strict/pressure-1.png)
+    ## Observations: 486
+    ## Variables: 14
+    ## $ what_is_your_age                                                                                                              <chr> ...
+    ## $ what_is_your_gender                                                                                                           <chr> ...
+    ## $ how_do_you_identify_your_sexual_orientation                                                                                   <chr> ...
+    ## $ are_you_a_cigarette_smoker                                                                                                    <chr> ...
+    ## $ which_borough_are_you_from                                                                                                    <chr> ...
+    ## $ i_am_a_high_school_graduate                                                                                                   <chr> ...
+    ## $ i_know_where_to_get_information_on_safety_rights_and_or_reporting                                                             <chr> ...
+    ## $ i_know_who_to_talk_to_or_how_to_file_a_complaint_if_i_am_worried_about_my_safety_or_the_behavior_of_a_particular_staff_member <chr> ...
+    ## $ please_indicate_how_strongly_you_agree_or_disagree_with_the_following_statements                                              <chr> ...
+    ## $ x14                                                                                                                           <chr> ...
+    ## $ x15                                                                                                                           <chr> ...
+    ## $ x16                                                                                                                           <chr> ...
+    ## $ x17                                                                                                                           <chr> ...
+    ## $ race                                                                                                                          <chr> ...
 
-Note that the `echo = FALSE` parameter was added to the code chunk to
-prevent printing of the R code that generated the plot.
+Now we have the top answers for race only in one column! Next, I like to
+
+    names <- c("age", "gender", "so", "smoker", "borough", "hsd", "get_info", "file_complaint", "Q1", "Q2", "Q3", "Q4", "Q5", "race")
+
+    data_dictionary <- mysurvey[1,] 
+    names(data_dictionary) <- names
+
+    data_dictionary <- data_dictionary %>% as.data.frame  %>% 
+      rownames_to_column(., 'Var1') %>% select(-Var1) %>% 
+      gather(key = "Question", value = "label", convert = TRUE)
+      
+    data_dictionary <- data_dictionary[1,7] <- 
+    data_dictionary <- data_dictionary[1,8]
+    data_dictionary <- data_dictionary[1,14]
+
+Since likert questions tend to be long sentences, I usually just rename
+them as Q\# and keep the labels separate in a data dictionary. This
+makes analysis and visualizing charts much easier. The questions in the
+data disctionary were also the ones were the labels were missing from
+the 1st row - so this makes organizing the data much easier.
