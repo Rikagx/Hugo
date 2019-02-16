@@ -2,7 +2,7 @@ As a data practicioner in the public sector, I frequently work on data
 compiled through surveys. We use surveys to get a feel for how clients
 are reacting to various programming, to analyze qualitative and
 quantitative data, and even to compile demographics. 90% of the time,
-the data is collected through \[SurveyMonkey\] (www.surveymonkey.com) -
+the data is collected through [SurveyMonkey](http://surveymonkey.com) -
 an online tool that works pretty well, especially if you upgrade to a
 paid version. As with any online software tool that optimizes UI through
 point and click tools, it has a few quirks.
@@ -18,6 +18,8 @@ easy, quick, and pretty visualizations.
 In the **Analyze Results** tab, SM allows users to download their data
 in a variety of ways. You can download the following in csv, xlsx, pdf,
 or spss outputs:
+
+![surveymonkey screenshot](images/export.png)
 
 -   All summary data - I have not found this useful for my own analysis.
     This simply spits out the aggregate results of each question.

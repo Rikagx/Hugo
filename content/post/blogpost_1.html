@@ -191,11 +191,12 @@ $(document).ready(function () {
 </div>
 
 
-<p>As a data practicioner in the public sector, I frequently work on data compiled through surveys. We use surveys to get a feel for how clients are reacting to various programming, to analyze qualitative and quantitative data, and even to compile demographics. 90% of the time, the data is collected through [SurveyMonkey] (www.surveymonkey.com) - an online tool that works pretty well, especially if you upgrade to a paid version. As with any online software tool that optimizes UI through point and click tools, it has a few quirks.</p>
+<p>As a data practicioner in the public sector, I frequently work on data compiled through surveys. We use surveys to get a feel for how clients are reacting to various programming, to analyze qualitative and quantitative data, and even to compile demographics. 90% of the time, the data is collected through <a href="http://surveymonkey.com">SurveyMonkey</a> - an online tool that works pretty well, especially if you upgrade to a paid version. As with any online software tool that optimizes UI through point and click tools, it has a few quirks.</p>
 <p>If, like me, you want to do the analysis on your own or in some other tool like R, I’ve found that there are a handful of best practices that can help. I wanted to write a blogpost that went through some ways to work through these quirks, summarize likert style data, and create some easy, quick, and pretty visualizations.</p>
 <div id="exporting-sm-data" class="section level3">
 <h3>Exporting SM data</h3>
 <p>In the <strong>Analyze Results</strong> tab, SM allows users to download their data in a variety of ways. You can download the following in csv, xlsx, pdf, or spss outputs:</p>
+<p>[images/export.png]</p>
 <ul>
 <li><p>All summary data - I have not found this useful for my own analysis. This simply spits out the aggregate results of each question.</p></li>
 <li><p>All responses data - exports the raw dataset with individual responses as rows and questions as columns. This is what I primarily use for my analysis.</p></li>
@@ -204,7 +205,7 @@ $(document).ready(function () {
 </div>
 <div id="cleaning-data" class="section level3">
 <h3>Cleaning data</h3>
-<p>In a standard survey, I will usually have a mix of demographic, binary (Yes or No), and likert scale questions. When I load my data in R as a .csv, however, I can quickly see that survey monkey has a funny way of organizing the different questions and their associated labels. It looks like the headers for the data are included over the first two rows of our data table, depending on the type of question.</p>
+<p>In a standard survey, I will usually have a mix of demographic, binary, and likert scale questions. When I load my data in R as a .csv, however, I can quickly see that survey monkey has a funny way of organizing the different questions and their associated labels. It looks like the headers for the data are included over the first two rows of our data table, depending on the type of question.</p>
 <p>Binary questions have correct headers but then the first row for each column has the character “Response”.</p>
 <pre><code>## # A tibble: 4 x 4
 ##   `How do you identi~ `Are you a cigar~ `Which borough a~ `I am a high sch~
@@ -213,7 +214,7 @@ $(document).ready(function () {
 ## 2 Prefer not to answ~ No                Manhattan         Yes              
 ## 3 Bisexual            No                Bronx             Yes              
 ## 4 Bisexual            No                Queens            Yes</code></pre>
-<p>Questions where the user can give multiple answer choices are spread across several columns identified by headers X4, X5, X6, etc.</p>
+<p>Questions where the user can give multiple answer choices are spread across several columns identified by unnamed headers X4, X5, X6, etc.</p>
 <pre><code>## # A tibble: 4 x 4
 ##   `What is your race?`  X4                       X5             X6         
 ##   &lt;chr&gt;                 &lt;chr&gt;                    &lt;chr&gt;          &lt;chr&gt;      
@@ -221,7 +222,7 @@ $(document).ready(function () {
 ## 2 &lt;NA&gt;                  &lt;NA&gt;                     &lt;NA&gt;           &lt;NA&gt;       
 ## 3 &lt;NA&gt;                  &lt;NA&gt;                     &lt;NA&gt;           &lt;NA&gt;       
 ## 4 &lt;NA&gt;                  &lt;NA&gt;                     Non-Hispanic ~ &lt;NA&gt;</code></pre>
-<p>Likert questions have a blank header and our likert statement is included in the 2nd row of each column.</p>
+<p>Likert questions have a blank header and our likert statement is included in the 1st row of each column.</p>
 <pre><code>## # A tibble: 4 x 1
 ##   X14                                                                    
 ##   &lt;chr&gt;                                                                  
