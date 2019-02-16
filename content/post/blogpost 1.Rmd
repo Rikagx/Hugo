@@ -35,7 +35,7 @@ If, like me, you want to do the analysis on your own or in some other tool like 
 
 In the **Analyze Results** tab, SM allows users to download their data in a variety of ways. You can download the following in csv, xlsx, pdf, or spss outputs: 
 
-![surveymonkey screenshot]here(images", "export.png")
+![surveymonkey screenshot]("export.png")
 
 * All summary data - I have not found this useful for my own analysis. This simply spits out the aggregate results of each question. 
 
