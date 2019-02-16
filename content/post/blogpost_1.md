@@ -1,3 +1,6 @@
+Working with Survey...Monkeys?
+==============================
+
 As a data practicioner in the public sector, I frequently work on data
 compiled through surveys. We use surveys to get a feel for how clients
 are reacting to various programming, to analyze qualitative and
@@ -19,7 +22,7 @@ In the **Analyze Results** tab, SM allows users to download their data
 in a variety of ways. You can download the following in csv, xlsx, pdf,
 or spss outputs:
 
-![surveymonkey screenshot](images/export.png)
+\[surveymonkey screenshot\]here(images", "export.png")
 
 -   All summary data - I have not found this useful for my own analysis.
     This simply spits out the aggregate results of each question.
