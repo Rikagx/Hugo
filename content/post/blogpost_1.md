@@ -22,7 +22,7 @@ In the **Analyze Results** tab, SM allows users to download their data
 in a variety of ways. You can download the following in csv, xlsx, pdf,
 or spss outputs:
 
-\[surveymonkey screenshot\]here(images", "export.png")
+![surveymonkey screenshot](images/%22export.png%22)
 
 -   All summary data - I have not found this useful for my own analysis.
     This simply spits out the aggregate results of each question.
@@ -194,3 +194,15 @@ dataset that we can work with!
     ## $ Q4             <fct> Neutral, Strongly agree, Agree, Disagree, Agree...
     ## $ Q5             <fct> Neutral, Strongly agree, Agree, Agree, Agree, A...
     ## $ race           <fct> NA, NA, Non-Hispanic Caucasian, Non-Hispanic Ca...
+
+### Analyzing and Summarizing
+
+Whenever I do any sort of analysis, I like to first quickly summarize my
+data. This is helpful both for reporting purposes and for explaining
+analysis to non-stats folks. Especially, for chi-square or t-test
+analysis, its always nice to see a quick contingency table which can
+help intuitively explain when certain variables are associated with one
+another.
+
+The benefit and sometimes the curse of R is that there are multiple ways
+of doing the same thing. Summarizing

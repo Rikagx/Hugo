@@ -35,7 +35,7 @@ If, like me, you want to do the analysis on your own or in some other tool like 
 
 In the **Analyze Results** tab, SM allows users to download their data in a variety of ways. You can download the following in csv, xlsx, pdf, or spss outputs: 
 
-![surveymonkey screenshot]("export.png")
+![surveymonkey screenshot](images/"export.png")
 
 * All summary data - I have not found this useful for my own analysis. This simply spits out the aggregate results of each question. 
 
@@ -105,7 +105,7 @@ Next we need to actually clean up the first two rows of our dataframe. Since we 
 
 ```{r}
 names(mysurvey) <- names
-mysurvey <- mysurvey[-1,]   
+mysurvey <- mysurvey[-1,]   #finally getting rid of that awful first row
 
 mysurvey$age <- parse_number(mysurvey$age)
 cols <- colnames(mysurvey[ ,2:14])
@@ -115,6 +115,37 @@ glimpse(mysurvey)
 
 ```
 
+The last thing I'd like to do to clean our data is change all the likert scale questions to ordered factors. I could have probably done this above in my parsing but two steps makes things a bit more explcit so what the hell, why not?!
+
+```{r}
+likert_scale <- c("Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree")
+
+mysurvey <- mysurvey %>% 
+  mutate_at(vars(matches("^Q")), funs(factor(., levels = likert_scale, ordered = TRUE)))
+```
+
+
+### Analyzing and Summarizing
+
+Whenever I do any sort of analysis, I like to first quickly summarize my data. This is helpful both for reporting purposes and for explaining analysis to non-stats folks. Especially, for chi-square or t-test analysis, its always nice to see a quick contingency table or cross-tab which can help intuitively explain when certain variables are associated with one another. 
+
+The benefit and sometimes the curse of R is that there are multiple ways of doing the same thing. Let's look at a few ways of summarizing 
+
+
+
+```{r}
+mysurvey %>% select(borough, file_complaint) %>% 
+group_by(borough) %>%  
+  count(borough, file_complaint) %>%
+  mutate(perc = round(prop.table(n)*100, digits = 0)) %>% # you can also use 'n/sum(n)' instead of prop.table here
+  select(-n) %>% 
+  mutate(perc = paste0(perc, "%")) %>% 
+  spread(borough, perc) 
+```
+
+```{r}
+prop.table(table(mysurvey$borough, mysurvey$file_complaint, useNA = "always"), margin = 1)*100 #margin tells prop.table which group we are distributing by which group
+```
 
 
 
